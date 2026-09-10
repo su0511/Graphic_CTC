@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL Shader Template4</title>
+    <style>
+        /* Remove default margins and hide scrollbars */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+        /* Make canvas cover the entire screen */
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="gl-canvas"></canvas>
+
+    <script>
+        const canvas = document.querySelector('#gl-canvas');
+        const gl = canvas.getContext('webgl');
+
+        if (!gl) {
+            alert('WebGL not supported!');
+        }
+
+        // Object to store normalized or raw mouse coordinates
+        const mouse = { x: 0, y: 0 };
+
+        // Track mouse movement (mapping WebGL's bottom-left origin)
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            // Invert Y because browser coordinates start at top-left, WebGL starts at bottom-left
+            mouse.y = window.innerHeight - e.clientY;
+        });
+
+        // Resize canvas to match display size
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Vertex shader: simple full-quad position pass
+        const vsSource = `
+            attribute vec2 a_position;
+            void main() {
+                gl_Position = vec4(a_position, 0.0, 1.0);
+            }
+        `;
+
+        // Fragment shader: uses u_resolution, u_time, and u_mouse
+        const fsSource = `
+          // Author @patriciogv ( patriciogonzalezvivo.com ) - 2015
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+#define PI 3.14159265358979323846
+
+uniform vec2 u_resolution;
+uniform float u_time;
+
+vec2 rotate2D (vec2 _st, float _angle) {
+    _st -= 0.5;
+    _st =  mat2(cos(_angle),-sin(_angle),
+                sin(_angle),cos(_angle)) * _st;
+    _st += 0.5;
+    return _st;
+}
+
+vec2 tile (vec2 _st, float _zoom) {
+    _st *= _zoom;
+    return fract(_st);
+}
+
+vec2 rotateTilePattern(vec2 _st){
+
+    //  Scale the coordinate system by 2x2
+    _st *= 2.0;
+
+    //  Give each cell an index number
+    //  according to its position
+    float index = 0.0;
+    index += step(1.000, mod(_st.x,1.50));
+    index += step(0.5, mod(_st.y,1.50))*2.00;
+
+    //      |
+    //  2   |   3
+    //      |
+    //--------------
+    //      |
+    //  0   |   1
+    //      |
+
+    // Make each cell between 0.0 - 1.0
+    _st = fract(_st);
+
+    // Rotate each cell according to the index
+    if(index == 1.000){
+        //  Rotate cell 1 by 90 degrees
+        _st = rotate2D(_st,PI*-0.00);
+    } else if(index == 2.000){
+        //  Rotate cell 2 by -90 degrees
+    float angleValue = mix(-0.5,-0.25,
+        sin(u_time) * 0.8 + 0.5
+    );
+
+_st = rotate2D(_st, PI * angleValue);
+    } else if(index == 3.0){
+        //  Rotate cell 3 by 180 degrees
+        _st = rotate2D(_st,PI);
+    }
+
+    return _st;
+}
+
+void main (void) {
+    vec2 st = gl_FragCoord.xy/u_resolution.xy;
+
+    st = tile(st,3.0);
+    st = rotateTilePattern(st);
+
+    // Make more interesting combinations
+    // st = tile(st,2.0);
+    // st = rotate2D(st,-PI*u_time*0.25);
+    // st = rotateTilePattern(st*2.);
+    // st = rotate2D(st,PI*u_time*0.25);
+
+    // step(st.x,st.y) just makes a b&w triangles
+    // but you can use whatever design you want.
+    gl_FragColor = vec4(vec3(step(st.x,st.y)),1.0);
+}
+
+        `;
+
+        // Helper function to compile shaders
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+        // Link program
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        // Set up rectangle geometry covering the screen (two triangles)
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        const positions = new Float32Array([
+            -1, -1,
+             1, -1,
+            -1,  1,
+            -1,  1,
+             1, -1,
+             1,  1,
+        ]);
+        gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, "a_position");
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        // Get uniform locations
+        const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+        const timeLocation = gl.getUniformLocation(program, "u_time");
+        const mouseLocation = gl.getUniformLocation(program, "u_mouse");
+
+        // Render loop
+        let startTime = Date.now();
+        function render() {
+            let currentTime = (Date.now() - startTime) * 0.001;
+
+            // Pass uniform data to shader
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, currentTime);
+            gl.uniform2f(mouseLocation, mouse.x, mouse.y);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+        render();
+    </script>
+</body>
+</html>

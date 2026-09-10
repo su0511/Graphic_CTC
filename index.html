@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding For Graphics and Interfaces</title>
+  <style>
+    :root { color-scheme: light; --paper: #fafaf8; --ink: #191919; --muted: #656560; --line: #ccccc6; --accent: #82b5df; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    main { max-width: 1600px; margin: 0 auto; padding: 32px 48px 36px; }
+    .masthead { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; border-top: 3px solid var(--ink); padding-top: 16px; font-size: 13px; line-height: 1.4; }
+    .masthead p { margin: 0; }
+    .semester { grid-column: 1 / 4; }
+    .author { grid-column: 4; }
+    .hero { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; padding: clamp(64px, 9vw, 130px) 0 clamp(64px, 8vw, 116px); }
+    h1 { grid-column: 1 / -1; margin: 0; font-size: clamp(52px, 8.65vw, 132px); font-weight: 500; line-height: .96; letter-spacing: -.035em; }
+    h1 span { display: block; }
+    h1 .accent { color: var(--accent); }
+    .section-label { margin: 0; padding: 14px 0 24px; border-top: 1px solid var(--ink); font-size: 12px; font-weight: 500; letter-spacing: .035em; text-transform: uppercase; }
+    .weeks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 24px; }
+    .week-button { display: flex; align-items: flex-start; justify-content: space-between; min-height: 128px; padding: 16px 0 24px; border-top: 1px solid var(--line); color: inherit; text-decoration: none; transition: color 150ms ease; }
+    .number { font-size: 44px; font-weight: 400; line-height: 1; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
+    .week-meta { display: flex; align-items: center; gap: 24px; padding-top: 5px; color: var(--muted); font-size: 12px; }
+    .arrow { font-size: 18px; line-height: 1; }
+    .week-button:hover, .week-button:hover .week-meta { color: var(--accent); }
+    .week-button:focus-visible { color: var(--accent); outline: 2px solid var(--accent); outline-offset: 5px; }
+    @media (min-width: 1600px) { h1 { font-size: 132px; } }
+    @media (max-width: 760px) {
+      main { padding: 24px; }
+      .masthead { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+      .semester { grid-column: 1; } .author { grid-column: 2; }
+      .hero { padding: 72px 0 64px; }
+      h1 { font-size: clamp(44px, 10.8vw, 80px); }
+      .weeks { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; }
+      .week-button { min-height: 112px; }
+      .week-meta { gap: 12px; }
+      .number { font-size: 38px; }
+    }
+    @media (max-width: 360px) { main { padding: 20px 16px; } h1 { font-size: 40px; } }
+    @media (prefers-reduced-motion: reduce) { .week-button { transition: none; } }
+  
+    .back, .week-nav a { color: var(--ink); text-decoration: none; }
+    .back:hover, .week-nav a:hover { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 6px; }
+    .back:focus-visible, .week-nav a:focus-visible { outline: 2px solid var(--ink); outline-offset: 5px; }
+    .week-title { color: var(--accent); }
+    .course { margin: 24px 0 0; font-size: 15px; line-height: 1.5; }
+    .course span { color: var(--ink); }
+    .week-hero { display: block; }
+    .project-link { min-height: 152px; flex-direction: column; gap: 24px; }
+    .project-link .week-meta { width: 100%; justify-content: space-between; }
+    .empty { border-top: 1px solid var(--line); padding: 28px 0 80px; }
+    .empty p { margin: 0 0 10px; font-size: 18px; }
+    .empty .hint { font-size: 13px; color: var(--muted); }
+    .week-nav { display: flex; flex-wrap: wrap; gap: 16px 28px; border-top: 1px solid var(--ink); margin-top: 48px; padding-top: 18px; font-size: 13px; }
+    .week-nav a[aria-current="page"] { font-weight: 700; border-bottom: 3px solid var(--accent); padding-bottom: 8px; }
+
+    .week-button:hover, .week-button:hover .week-meta { color: var(--ink); }
+    .week-button:hover { border-top-color: var(--accent); background: #eaf3fa; }
+    .week-button:focus-visible { color: var(--ink); outline-color: var(--ink); }
+</style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="masthead"><p class="semester">Fall 2026</p><p class="author">Susan He</p></div>
+      <div class="hero"><h1><span>Coding for</span><span class="accent">Graphics</span><span>and Interfaces</span></h1></div>
+    </header>
+    <h2 class="section-label" id="weekly-projects">Weekly projects / 01—08</h2>
+    <nav class="weeks" aria-labelledby="weekly-projects">
+      <a class="week-button" href="week1/index.html" aria-label="Week 1"><span class="number">01</span><span class="week-meta">Week <span class="arrow" aria-hidden="true">↗</span></span></a>
+      <a class="week-button" href="week2/index.html" aria-label="Week 2"><span class="number">02</span><span class="week-meta">Week <span class="arrow" aria-hidden="true">↗</span></span></a>
+      <a class="week-button" href="week3/index.html" aria-label="Week 3"><span class="number">03</span><span class="week-meta">Week <span class="arrow" aria-hidden="true">↗</span></span></a>
+      <a class="week-button" href="week4/index.html" aria-label="Week 4"><span class="number">04</span><span class="week-meta">Week <span class="arrow" aria-hidden="true">↗</span></span></a>
+      <a class="week-button" href="week5/index.html" aria-label="Week 5"><span class="number">05</span><span class="week-meta">Week <span class="arrow" aria-hidden="true">↗</span></span></a>
+      <a class="week-button" href="week6/index.html" aria-label="Week 6"><span class="number">06</span><span class="week-meta">Week <span class="arrow" aria-hidden="true">↗</span></span></a>
+      <a class="week-button" href="week7/index.html" aria-label="Week 7"><span class="number">07</span><span class="week-meta">Week <span class="arrow" aria-hidden="true">↗</span></span></a>
+      <a class="week-button" href="week8/index.html" aria-label="Week 8"><span class="number">08</span><span class="week-meta">Week <span class="arrow" aria-hidden="true">↗</span></span></a>
+    </nav>
+  </main>
+</body>
+</html>
