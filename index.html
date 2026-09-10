@@ -17,7 +17,7 @@
     h1 { grid-column: 1 / -1; margin: 0; font-size: clamp(52px, 8.65vw, 132px); font-weight: 500; line-height: .96; letter-spacing: -.035em; }
     h1 span { display: block; }
     h1 .accent { color: var(--accent); }
-    .section-label { margin: 0; padding: 14px 0 24px; border-top: 1px solid var(--ink); font-size: 12px; font-weight: 500; letter-spacing: .035em; text-transform: uppercase; }
+    .section-label { margin: 0; padding: 14px 0 24px; border-top: 1px solid var(--ink); }
     .weeks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 24px; }
     .week-button { display: flex; align-items: flex-start; justify-content: space-between; min-height: 128px; padding: 16px 0 24px; border-top: 1px solid var(--line); color: inherit; text-decoration: none; transition: color 150ms ease; }
     .number { font-size: 44px; font-weight: 400; line-height: 1; letter-spacing: -.055em; font-variant-numeric: tabular-nums; }
@@ -58,6 +58,14 @@
     .week-button:hover, .week-button:hover .week-meta { color: var(--ink); }
     .week-button:hover { border-top-color: var(--accent); background: #eaf3fa; }
     .week-button:focus-visible { color: var(--ink); outline-color: var(--ink); }
+    .masthead p, .section-label, .week-meta {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+      letter-spacing: .035em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
 </style>
 </head>
 <body>
