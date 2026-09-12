@@ -55,7 +55,55 @@
     .week-button:focus-visible { color: var(--ink); outline-color: var(--ink); }
 
     .week-title { letter-spacing: -.035em; }
-  </style></head>
+  </style><style>
+/* Quiet, book-like typography shared by the course pages. */
+:root {
+  --paper: #f8f6f1;
+  --ink: #3e403d;
+  --muted: #6d716b;
+  --line: #d8d9d1;
+  --accent: #667e89;
+}
+body {
+  font-family: Garamond, 'Apple Garamond', 'Baskerville', 'Times New Roman', serif;
+  line-height: 1.6;
+}
+main { max-width: 1320px; padding-top: 40px; padding-bottom: 64px; }
+.masthead { border-top: 1px solid var(--line); padding-top: 20px; }
+.hero { padding: clamp(72px, 10vw, 144px) 0 clamp(72px, 9vw, 128px); }
+h1 {
+  font-size: clamp(46px, 7.6vw, 108px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+}
+.masthead p, .section-label, .week-meta {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: .015em;
+  text-transform: none;
+  color: var(--muted);
+}
+.section-label, .week-nav { border-top-color: var(--line); }
+.number { font-size: 40px; letter-spacing: -.025em; }
+.week-button { padding-top: 22px; }
+.week-button:hover { color: var(--accent); background: transparent; border-top-color: var(--accent); }
+.week-button:hover .week-meta { color: var(--accent); }
+.week-nav { font-size: 15px; }
+.week-nav a[aria-current='page'] { font-weight: 400; border-bottom-width: 1px; }
+@media (max-width: 760px) {
+  main { padding: 24px; }
+  .hero { padding: 72px 0; }
+  h1 { font-size: clamp(38px, 9vw, 68px); }
+  .number { font-size: 34px; }
+}
+@media (max-width: 360px) {
+  main { padding: 20px 16px; }
+  h1 { font-size: 36px; }
+}
+</style>
+</head>
 <body><main>
 <header><div class="masthead"><p class="semester"><a class="back" href="../index.html">Back</a></p></div>
 <div class="hero week-hero"><h1 class="week-title">Week 06</h1></div></header>
