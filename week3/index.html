@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>week3</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      height: 100vh;
+      height: 100dvh;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      background: black;
+      color: #ddd;
+      font: 13px/1.6 system-ui, sans-serif;
+    }
+    #camera { min-width: 0; min-height: 0; }
+    canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: contain;
+      object-position: center;
+    }
+    #status { margin: 12px 16px; text-align: center; }
+  </style>
+</head>
+<body>
+  <main id="camera"></main>
+  <p id="status" role="status">Starting camera...</p>
+  <!-- Shader source is embedded so direct file opening does not require local fetches. -->
+  <script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+attribute vec2 aTexCoord;
+varying vec2 vTexCoord;
+
+void main() {
+  vTexCoord = aTexCoord;
+  vec4 positionVec4 = vec4(aPosition, 1.0);
+  positionVec4.xy = positionVec4.xy * 2.0 - 1.0;
+  gl_Position = positionVec4;
+}
+  </script>
+  <script id="fragment-shader" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform sampler2D tex0;
+uniform float u_time;
+uniform vec2 u_faceCenter;
+uniform vec2 u_faceRadius;
+uniform float u_handStrength;
+varying vec2 vTexCoord;
+
+void main() {
+  vec2 uv = vTexCoord;
+  uv.y = 1.0 - uv.y;
+
+  // Layer 1: the original, always-on horizontal wave.
+  uv.x += sin(uv.y * 20.0 + u_time * 2.0) * 0.02;
+
+  // Work in webcam texture coordinates, matching the detector's coordinates.
+  // An elliptical feathered mask keeps the second wave near the face.
+  vec2 local = (uv - u_faceCenter) / max(u_faceRadius, vec2(0.025));
+  float mask = 1.0 - smoothstep(0.55, 1.25, length(local));
+
+  // Layer 2: denser vertical waves, controlled by the hand's proximity.
+  float wave = sin(local.x * 11.0 - u_time * 7.0);
+  uv.y += wave * u_faceRadius.y * 0.24 * mask * u_handStrength;
+
+  gl_FragColor = vec4(texture2D(tex0, clamp(uv, 0.001, 0.999)).rgb, 1.0);
+}
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.min.js" onerror="document.getElementById('status').textContent = 'Could not load the graphics library. Check your internet connection and reload.'"></script>
+  <script src="sketch.js" onerror="document.getElementById('status').textContent = 'Could not load sketch.js. Keep it in the same folder as index.html.'"></script>
+</body>
+</html>
