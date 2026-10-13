@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 5</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #000; color: #fff; }
+    main {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    video {
+      display: block;
+      width: 100%;
+      max-height: calc(100vh - 48px);
+      max-height: calc(100dvh - 48px);
+      object-fit: contain;
+    }
+    a { color: inherit; }
+    @media (max-width: 640px) {
+      main { padding: 16px; }
+      video { max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <video controls playsinline preload="metadata" aria-label="Week 5 simulation">
+      <source src="simulation.mp4" type="video/mp4">
+      Your browser does not support video playback. <a href="simulation.mp4">Download the simulation video</a>.
+    </video>
+  </main>
+</body>
+</html>
